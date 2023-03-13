@@ -1,2 +1,6 @@
 # ignore "ignore" directory in the shared folder
-shared/ignore/
+shared/ignore
+
+# gitignore VIM temp files
+.gitignore~
+..gitignore.un~
