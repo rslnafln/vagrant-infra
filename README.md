@@ -227,7 +227,6 @@ To make it work, we'll just copy the base of every play from the base_playbook, 
 
 Example : 
 
-> # Install MYSQL Database on Database node
 > 
 > - name: Install MYSQL
 > 
