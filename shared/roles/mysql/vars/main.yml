@@ -1,0 +1,6 @@
+---
+# vars file for mysql
+new_mysql_root_password: redacted
+mysqlsoftware:
+  - mysql-server
+  - mysql-client

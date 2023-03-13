@@ -1,0 +1,21 @@
+---
+# tasks file for apache
+- name: "install apache"
+  apt:
+    name: ['apache2']
+    update_cache: yes
+    state: latest
+
+- name: "Create document root for domain configured in host variable"
+  file:
+    path: /var/www/
+    state: directory
+    owner: vagrant
+    group: vagrant
+    mode: 0755
+
+- name: "UFW firewall allow HTTP on port {{ http_port }}"
+  ufw:
+    rule: allow
+    port: 80
+    proto: tcp

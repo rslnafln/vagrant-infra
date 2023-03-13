@@ -93,7 +93,7 @@ To do so you can use this command :
 
 Then paste the **.pub** you copied earlier.
 
-Repeat for all the VM's except de MasterNode.
+Repeat for all the VM's except the MasterNode.
 
 ### Connect the MasterNode with the other nodes via SSH
 
@@ -113,7 +113,7 @@ In order to test the connection between the MasterNode and the machines with Ans
   
   If the ping is successful, we can move on to the next part.
 
-## Ansible
+# Ansible
 
 ### Create base Playbook
 
@@ -129,8 +129,123 @@ Now we can already test the playbook by going in the base_playbook.yaml folder a
 
 The next step will be to use Ansible's roles in order to organize the playbook better. It will make it so there is less redondance.
 
-### Roles
+## Roles
 
-### Play the Playbook
+### Purpose
+
+In this part, we will separate the playbook into different roles.
+
+Here we'll create the "role" folder in the shared directory to make it easier for us.
+
+### Our first role
+
+Let's create our first role, that will be used by all the VM's
+
+`ansible-galaxy init apt-update`
+
+It will do the apt update command on every machine before installing anything else.
+
+This command creates an "apt-udpate" folder in which we will make the role.
+
+The only change that we'll make here is in the main.yml file located at apt-update/tasks/main.yml.
+
+We'll add these lines taken from our base_playbook.yaml
+
+> - name: apt update
+>
+>   shell: apt update
+>
+
+note: if you're doing it on VSCode, there may be some indentation issues when you copy/paste, so make sure everything is correct for this.
+
+### MYSQL role
+
+Let's create the mysql installer role.
+
+`ansible-galaxy init mysql`
+
+We'll copy the "tasks" section from our base_playbook to mysql/tasks/main.yml.
+
+As we have a "vars" section for the MYSQL installation part, we'll copy this section into mysql/vars/main.yml aswell.
+
+So let's add these lines :
+
+> new_mysql_root_password: redacted
+> 
+> mysqlsoftware:
+> 
+>   - mysql-server
+> 
+>   - mysql-client
+
+We're done with the MYSQL installer role.
+
+### Nginx role
+
+Let's create the Nginx installer role. It's the same process as previously.
+
+`ansible-galaxy init nginx`
+
+Copy the tasks into nginx/tasks/main.yml.
+
+note: don't copy the "apt update" part as this will be done by the apt-udpate role.
+
+This time, we have handlers, so we'll copy them into nginx/handlers/main.yml.
+
+The file will look like this : 
+
+> - name: "restart nginx"
+> 
+>   service:
+> 
+>     name: nginx
+> 
+>     state: restarted
+
+And we're done with this role.
+
+### Apache role
+
+We'll do the process once more.
+
+`ansible-galaxy init apache`
+
+Copy the "tasks" section into apache/tasks/main.yml and the "handlers" section into apache/handlers/main.yml.
+
+
+### Docker role
+
+Once again.
+
+`ansible-galaxy init docker`
+
+We only have tasks here, so we'll just copy the "tasks" section into docker/tasks/main.yml.
+
+### Create the Playbook that will play the roles
+
+To make it work, we'll just copy the base of every play from the base_playbook, but instead of copying all the tasks, vars, handlers, etc... We'll just type which role we want it to play.
+
+Example : 
+
+> # Install MYSQL Database on Database node
+> 
+> - name: Install MYSQL
+> 
+>   hosts: db
+> 
+>   become: yes
+> 
+>   roles:
+> 
+>     - role: /home/vagrant/shared_folder/roles/apt-update
+> 
+>     - role: /home/vagrant/shared_folder/roles/mysql
+> 
+
+You can see the whole file at shared/roles/roles_playbook.yaml.
 
 ### Test
+
+Let's test the playbook and see if it works.
+
+`ansible-playbook roles_playbook.yaml`

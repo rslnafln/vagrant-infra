@@ -1,0 +1,37 @@
+# The playbook that will play the roles
+
+# Install MYSQL Database on Database node
+- name: Install MYSQL
+  hosts: db
+  become: yes
+
+  roles:
+    - role: /home/vagrant/shared_folder/roles/apt-update
+    - role: /home/vagrant/shared_folder/roles/mysql
+
+# Install NGINX on the NGINX machine
+- name: Install NGINX
+  hosts: nginx
+  become: yes
+
+  roles:
+    - role: /home/vagrant/shared_folder/roles/apt-update
+    - role: /home/vagrant/shared_folder/roles/nginx
+
+# Install Apache2 on the Apache machine
+- name: Install Apache2
+  hosts: apache
+  become: yes
+
+  roles:
+    - role: /home/vagrant/shared_folder/roles/apt-update
+    - role: /home/vagrant/shared_folder/roles/apache
+
+# Install Docker on the docker machine
+- name: Install Docker
+  hosts: docker
+  become: true
+
+  roles:
+    - role: /home/vagrant/shared_folder/roles/apt-update
+    - role: /home/vagrant/shared_folder/roles/docker
