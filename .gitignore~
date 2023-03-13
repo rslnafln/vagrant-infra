@@ -1,5 +1,7 @@
 # ignore "ignore" directory in the shared folder
-shared/ignore
+shared/ignore/id_rsa.pub
+
+*.pub
 
 # gitignore VIM temp files
 .gitignore~

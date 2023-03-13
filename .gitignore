@@ -1,5 +1,5 @@
 # ignore "ignore" directory in the shared folder
-shared/ignore/id_rsa.pub
+# shared/ignore/id_rsa.pub
 
 *.pub
 

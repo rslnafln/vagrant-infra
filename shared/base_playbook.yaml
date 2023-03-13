@@ -1,0 +1,141 @@
+# This is the base of the playbook that will do everything
+
+# Install MYSQL Database on Database node
+- name: Install MYSQL
+  hosts: db
+  become: yes
+  vars:
+    new_mysql_root_password: redacted
+    mysqlsoftware:
+      - mysql-server
+      - mysql-client
+  tasks:
+    - name: Install MYSQL server
+      shell: apt-get -y install mysql-server
+    
+    - name: Install MYSQL client
+      shell: apt-get -y install mysql-client
+
+    - name: Install the MYSQL service
+      shell: service mysql start
+
+# Install NGINX on the NGINX machine
+- name: Install NGINX
+  hosts: nginx
+  become: yes
+  tasks:
+    - name: "apt-get update"
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: "install nginx"
+      apt:
+        name: ['nginx']
+        state: latest
+
+  handlers:
+    - name: "restart nginx"
+      service:
+        name: nginx
+        state: restarted
+
+# Install Apache2 on the Apache machine
+- name: Install Apache2
+  hosts: apache
+  become: yes
+  tasks:
+    - name: "apt-get update"
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: "install apache"
+      apt:
+        name: ['apache2']
+        update_cache: yes
+        state: latest
+
+    - name: "Create document root for domain configured in host variable"
+      file:
+        path: /var/www/
+        state: directory
+        owner: vagrant
+        group: vagrant
+        mode: 0755
+
+    - name: "UFW firewall allow HTTP on port {{ http_port }}"
+      ufw:
+        rule: allow
+        port: 80
+        proto: tcp
+
+  handlers:
+    - name: "restart apache"
+      service:
+        name: apache2
+        state: restarted
+
+# Install Docker on the docker machine
+- name: Install Docker
+  hosts: docker
+  become: true
+
+  tasks:
+    - name: Install aptitude
+      apt:
+        name: aptitude
+        state: latest
+        update_cache: true
+      
+    - name: Install required system packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: latest
+        update_cache: true
+    
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+    
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+    
+    - name: Update all apt packages
+      apt:
+        upgrade=yes
+        force_apt_get=yes
+      become: true
+    
+    - name: Install Python pip
+      apt:
+        name={{item}}
+        update_cache=true
+        state=present
+        force_apt_get=yes
+
+      with_items:
+        - python-pip
+        - python3-pip
+
+      become: true
+
+    - name: Install Docker Module for Python
+      pip:
+        name: docker
