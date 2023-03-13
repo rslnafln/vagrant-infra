@@ -117,6 +117,12 @@ In order to test the connection between the MasterNode and the machines with Ans
 
 ### Create base Playbook
 
+Create a .yaml file in the shared directory of the MasterNode.
+
+It will be the base of what's comming next.
+
+You can find the file in the `shared` folder.
+
 ### Roles
 
 ### Play the Playbook
