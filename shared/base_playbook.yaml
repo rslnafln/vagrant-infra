@@ -10,6 +10,9 @@
       - mysql-server
       - mysql-client
   tasks:
+    - name: apt update
+      shell: apt update
+
     - name: Install MYSQL server
       shell: apt-get -y install mysql-server
     

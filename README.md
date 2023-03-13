@@ -121,7 +121,13 @@ Create a .yaml file in the shared directory of the MasterNode.
 
 It will be the base of what's comming next.
 
-You can find the file in the `shared` folder.
+You can find the file in the `shared` folder. (`base_playbook.yaml`)
+
+Now we can already test the playbook by going in the base_playbook.yaml folder and run this command : 
+
+`ansible-playbook base_playbook.yaml`
+
+The next step will be to use Ansible's roles in order to organize the playbook better. It will make it so there is less redondance.
 
 ### Roles
 

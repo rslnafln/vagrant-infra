@@ -1,6 +1,6 @@
 # ignore "ignore" directory in the shared folder
 # shared/ignore/id_rsa.pub
-
+shared/base_playbook.retry
 *.pub
 
 # gitignore VIM temp files
