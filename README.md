@@ -71,9 +71,47 @@ This is useful for working in VSCode on Windows and easily share the files with 
 
 ### Create SSH key on MasterNode
 
+We need a SSH key pair in order to make connection with the other VM's
+
+To do so, we will first go to the SSH folder in the MasterNode :
+
+`cd ~/.ssh`
+
+Then we generate a key pair
+
+`ssh-keygen`
+
+Copy the code in the **.pub** file corresponding to the newly generated key.
+
+### Establish SSH permission with the other VM's
+
+Connect to the other machines with `vagrant ssh *name of the node*` then edit *authorized_keys* file in *~/.ssh* folder.
+
+To do so you can use this command : 
+
+`sudo vim authorized_keys`
+
+Then paste the **.pub** you copied earlier.
+
+Repeat for all the VM's except de MasterNode.
+
 ### Connect the MasterNode with the other nodes via SSH
 
+Test the connection between the MasterNode and the other nodes by using a command like this in the MasterNode : 
+
+`ssh -i id_rsa vagrant@172.16.1.51`
+
+"id_rsa" is the name of your SSH key.
+
+"vagrant@172.16.1.51" is the username@ip_address of the VM you're connecting to.
+
 ### Test ping with Ansible
+
+In order to test the connection between the MasterNode and the machines with Ansible, we run this command :
+
+  `ansible -m ping all`
+  
+  If the ping is successful, we can move on to the next part.
 
 ## Ansible
 
